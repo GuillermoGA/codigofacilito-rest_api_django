@@ -1,6 +1,7 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
+from django.http import Http404
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from video.models import Video
 from .serializers import VideoSerializer
 
@@ -18,3 +19,12 @@ class ListVideo(APIView):
             video_json.save()
             return Response(video_json.data, status=201)
         return Response(video_json.errors, status=400)
+
+class DetailVideo(APIView):
+    def get(self, request, pk):
+        try:
+            video = Video.objects.get(pk=pk)
+            video_json = VideoSerializer(video)
+            return Response(video_json.data, status=200)
+        except Video.DoesNotExist:
+            raise Http404
