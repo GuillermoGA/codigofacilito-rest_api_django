@@ -21,21 +21,21 @@ class ListVideo(APIView):
         return Response(video_json.errors, status=400)
 
 class DetailVideo(APIView):
-    def get(self, request, pk):
+    def get_object(self, pk):
         try:
-            video = Video.objects.get(pk=pk)
-            video_json = VideoSerializer(video)
-            return Response(video_json.data, status=200)
+            return Video.objects.get(pk=pk)
         except Video.DoesNotExist:
             raise Http404
 
+    def get(self, request, pk):
+        video = self.get_object(pk)
+        video_json = VideoSerializer(video)
+        return Response(video_json.data, status=200)
+
     def put(self, request, pk):
-        try:
-            video = Video.objects.get(pk=pk)
-            video_json = VideoSerializer(video, data=request.data)
-            if video_json.is_valid():
-                video_json.save()
-                return Response(video_json.data)
-            return Response(video_json.errors, status=400)
-        except Video.DoesNotExist:
-            raise Http404
+        video = self.get_object(pk)
+        video_json = VideoSerializer(video, data=request.data)
+        if video_json.is_valid():
+            video_json.save()
+            return Response(video_json.data)
+        return Response(video_json.errors, status=400)
