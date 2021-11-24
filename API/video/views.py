@@ -28,3 +28,14 @@ class DetailVideo(APIView):
             return Response(video_json.data, status=200)
         except Video.DoesNotExist:
             raise Http404
+
+    def put(self, request, pk):
+        try:
+            video = Video.objects.get(pk=pk)
+            video_json = VideoSerializer(video, data=request.data)
+            if video_json.is_valid():
+                video_json.save()
+                return Response(video_json.data)
+            return Response(video_json.errors, status=400)
+        except Video.DoesNotExist:
+            raise Http404
