@@ -1,6 +1,6 @@
 from django.contrib import admin
-from django.urls import path
 from .views import ListVideo
+from django.conf.urls import url
 urlpatterns = [
-    path(r'videos/', ListVideo.as_view(), name="lista-video"),
+    url(r'^videos/$', ListVideo.as_view(), name="lista-video"),
 ]
