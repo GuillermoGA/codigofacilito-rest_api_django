@@ -39,3 +39,8 @@ class DetailVideo(APIView):
             video_json.save()
             return Response(video_json.data)
         return Response(video_json.errors, status=400)
+
+    def delete(self, request, pk):
+        video = self.get_object(pk)
+        video.delete()
+        return Response(status=204)
